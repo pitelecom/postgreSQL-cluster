@@ -1,0 +1,169 @@
+version: '3.3'
+services:
+
+  postgrelb:
+    image: haproxy:alpine
+    depends_on:
+      - etcd
+    #if need external access than expose ports
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+      - "8008:8008"
+    configs:
+      - haproxy_cfg
+    networks:
+      - postgresApp
+      - postgresCluster
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+      placement:
+        constraints:
+          - node.labels.pdb == node
+    command: haproxy -f /haproxy_cfg
+  
+  etcd:
+    image: quay.io/coreos/etcd:v3.1.2
+    depends_on:
+      - dbnode1
+      - dbnode2
+      - dbnode3
+    configs:
+      - etcd_cfg
+    volumes:
+      - etcd_data:/etcd_data
+    networks: 
+      - postgresCluster
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.labels.pdb == node
+    command: /bin/sh /etcd_cfg
+
+  dbnode1:
+    image: citrustelecom/fs-postgresql:1.2.5
+    volumes:
+        #example of usage an external mount path
+        #- "/mnt/data/db-1-data:/data"
+        - db-1-data:/data
+    secrets: 
+      - patroni.yml
+    environment:
+      - PATRONI_NAME=dbnode1
+      - PATRONI_POSTGRESQL_DATA_DIR=data/dbnode1
+      - PATRONI_POSTGRESQL_CONNECT_ADDRESS=dbnode1:5432
+      - PATRONI_RESTAPI_CONNECT_ADDRESS=dbnode1:8008
+    env_file:
+      - ./config-cluster/live.env
+    networks:
+      - postgresCluster
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 16G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 7
+      placement:
+        constraints:
+          - node.labels.pdb1 == node
+    entrypoint: patroni
+    command: /run/secrets/patroni.yml
+
+  dbnode2:
+    image: citrustelecom/fs-postgresql:1.2.5
+    volumes:
+      - db-2-data:/data
+    secrets: 
+      - patroni.yml
+    environment:
+      - PATRONI_NAME=dbnode2
+      - PATRONI_POSTGRESQL_DATA_DIR=data/dbnode2
+      - PATRONI_POSTGRESQL_CONNECT_ADDRESS=dbnode2:5432
+      - PATRONI_RESTAPI_CONNECT_ADDRESS=dbnode2:8008
+    env_file:
+      - ./config-cluster/live.env
+    networks:
+      - postgresCluster
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 16G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 7
+      placement:
+        constraints:
+          - node.labels.pdb2 == node
+    entrypoint: patroni
+    command: /run/secrets/patroni.yml
+    
+  dbnode3:
+    image: citrustelecom/fs-postgresql:1.2.5
+    volumes:
+      - db-3-data:/data
+    secrets: 
+      - patroni.yml
+    environment:
+      - PATRONI_NAME=dbnode3
+      - PATRONI_POSTGRESQL_DATA_DIR=data/dbnode3
+      - PATRONI_POSTGRESQL_CONNECT_ADDRESS=dbnode3:5432
+      - PATRONI_RESTAPI_CONNECT_ADDRESS=dbnode3:8008
+    env_file:
+      - ./config-cluster/live.env
+    networks:
+      - postgresCluster
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 16G
+      restart_policy:
+        condition: on-failure
+        max_attempts: 7
+      placement:
+        constraints:
+          - node.labels.pdb3 == node
+    entrypoint: patroni
+    command: /run/secrets/patroni.yml
+
+volumes:
+   #exposed to external path mount "/mnt/data/db-1-data
+  db-1-data:
+    driver: local
+  db-2-data:
+    driver: local
+  db-3-data:
+    driver: local
+  etcd_data:
+    driver: local
+
+networks:
+  postgresCluster:
+  postgresApp:
+    external: true
+
+configs:
+  haproxy_cfg:
+    file: ./config-cluster/haproxy.cfg
+  etcd_cfg:
+    file: ./config-cluster/etcd.sh
+
+secrets:
+  patroni.yml:
+    file: ./config-cluster/patroni.yml
