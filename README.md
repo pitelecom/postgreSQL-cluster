@@ -45,6 +45,7 @@ Note: this Stack also created an 'attachable' Swarm network:
     fy2400k1pbac        LABpdb_postgresCluster   overlay             swarm
     ...
 ```
+
     To this network you should attach other containers which will be using the PostgreSQL DataBase.
 All the traffic is going via LoadBalancer (haproxy).
 There is no direct access to the Database instance. Database and Replication traffic is in secure swarm network.
@@ -62,7 +63,7 @@ Connect to cluster using 'psql' cmd (postgresql-client)
 
 1. Install client (a. external host or b. container connected to Swarm network):
 ```bash
-$ sudo apt-get update && apt-get install -y postgresql-client
+    $ sudo apt-get update && apt-get install -y postgresql-client
     $ psql --version
     psql (PostgreSQL) 9.5.12
 ```
