@@ -38,7 +38,7 @@ b. Set up 'Placement constraints' for database containers.
 ```
 
 > [!NOTE]
-> **Note:** this Stack also created an 'attachable' Swarm network:
+> this Stack also created an 'attachable' Swarm network:
 ```bash
     [root@swarmmanager1 ]# docker network ls
     NETWORK ID          NAME                      DRIVER              SCOPE
@@ -46,14 +46,18 @@ b. Set up 'Placement constraints' for database containers.
     fy2400k1pbac        LABpdb_postgresCluster   overlay             swarm
     ...
 ```
-> [!NOTE]
-> To this network you should attach other containers which will be using the PostgreSQL DataBase.
-All the traffic is going via LoadBalancer (haproxy).
-There is no direct access to the Database instance. Database and Replication traffic is in secure swarm network.
-To connect to PostgreSQL use your 'StackName_servicename_postgrelb' and ports:
-    Master:             5000
-    Slaves (Replicas):  5001
-    API:                8008
+> [!IMPORTANT]
+>1. **To this network you should attach other containers** which will be using the PostgreSQL DataBase.
+>All the traffic is going via LoadBalancer (haproxy).
+>There is no direct access to the Database instance. Database and Replication traffic is in secure swarm network.
+>To connect to PostgreSQL use your 'StackName_servicename_postgrelb' and ports below
+
+    - Master:             5000
+    - Slaves (Replicas):  5001
+    - API:                8008
+>2. The Stack is also configured to **publish the ports out of the Swarm**.
+>Those ports will also become available on each IP and each node of you Docker Swarm Cluster. Please make sure this is secure network.
+>To not publish the ports please remove this section from file docker-compose.yml -> 'postgrelb' -> 'ports' 
 
 This fully functinal PostgreSQL cluster.
 It works as 1 MASTER instance and multi SLAVEs instances.
