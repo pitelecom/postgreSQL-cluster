@@ -43,11 +43,11 @@ b. Set up 'Placement constraints' for database containers.
     [root@swarmmanager1 ]# docker network ls
     NETWORK ID          NAME                      DRIVER              SCOPE
     ...
-    fy2400k1pbac        LABpdb_postgresCluster   overlay             swarm
+    fy2400k1pbac        **postgresApp**   overlay             swarm
     ...
 ```
 > [!IMPORTANT]
->1. **To this network you should attach other containers** which will be using the PostgreSQL DataBase.
+>1. **To this swarm network you should attach other containers** which will be using the PostgreSQL DataBase.
 >All the traffic is going via LoadBalancer (haproxy).
 >There is no direct access to the Database instance. Database and Replication traffic is in secure swarm network.
 >To connect to PostgreSQL use your 'StackName_servicename_postgrelb' and ports below
