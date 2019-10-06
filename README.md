@@ -1,5 +1,6 @@
 # postgreSQL-cluster
-A postgreSQL database for Freeswitch
+A postgreSQL DataBase Cluster (also a DataBase cluster for FreeSWITCH)
+This solution has been designed to work as a **Stack** in **Docker Swarm Environment**.
 
 Prepare Docker Swarm.
 To provide HA you should use 2 or 3 servers.
@@ -57,7 +58,7 @@ It works as 1 MASTER instance and multi SLAVEs instances.
 This example uses 1 Master and 2 Slaves. However it can be scalled up to use more Slaves. Contact the Maintainer how to. 
 
 
-Connect to cluster using pgsql cmd (postgresql-client)
+Connect to cluster using 'psql' cmd (postgresql-client)
 
 1. Install client (a. external host or b. container connected to Swarm network):
 ```bash
@@ -66,13 +67,12 @@ $ sudo apt-get update && apt-get install -y postgresql-client
     psql (PostgreSQL) 9.5.12
 ```
 
-
-1.a Connect from remotehost:
-
+2. Connect from a remotehost:
 ```bash
     # psql -h <StackName_servicename_postgrelb> -p 5000 -d <database> -U <user> -W
 ```
-    example:
+
+   example:
 ```bash
     # psql -h LABpdb_postgrelb -p 5000 -d postgres -U admin -W
     Password for user ppostgres: <admin_PASSWORD defined in './config-cluster/live.env' file>
