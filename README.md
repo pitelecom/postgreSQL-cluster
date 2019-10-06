@@ -37,7 +37,8 @@ b. Set up 'Placement constraints' for database containers.
     Creating service LABpdb_dbnode2
 ```
 
-Note: this Stack also created an 'attachable' Swarm network:
+> [!NOTE]
+> **Note:** this Stack also created an 'attachable' Swarm network:
 ```bash
     [root@swarmmanager1 ]# docker network ls
     NETWORK ID          NAME                      DRIVER              SCOPE
@@ -45,8 +46,8 @@ Note: this Stack also created an 'attachable' Swarm network:
     fy2400k1pbac        LABpdb_postgresCluster   overlay             swarm
     ...
 ```
-
-    To this network you should attach other containers which will be using the PostgreSQL DataBase.
+> [!NOTE]
+> To this network you should attach other containers which will be using the PostgreSQL DataBase.
 All the traffic is going via LoadBalancer (haproxy).
 There is no direct access to the Database instance. Database and Replication traffic is in secure swarm network.
 To connect to PostgreSQL use your 'StackName_servicename_postgrelb' and ports:
