@@ -80,8 +80,8 @@ Connect to cluster using 'psql' cmd (postgresql-client)
 
    example:
 ```bash
-    # psql -h LABpdb_postgrelb -p 5000 -d postgres -U admin -W
-    Password for user ppostgres: <admin_PASSWORD defined in './config-cluster/live.env' file>
+    # psql -h LABpdb_postgrelb -p 5000 -d postgres -U ppostgres -W
+    Password for user ppostgres: <SUPERUSER_PASSWORD defined in './config-cluster/live.env' file>
     psql (9.6.3)
     postgres=#
 ```
