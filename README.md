@@ -27,7 +27,13 @@ b. Set up 'Placement constraints' for database containers.
 ```
 
 
-2. Deploy Docker Stack (this must be done from a Swarm MANGER node).
+2. Deploy docker swarm network
+   Via this network your application will reach the database
+```bash
+    [root@swarmmanager1 ]# docker network create --scope swarm --attachable -d overlay postgresApp
+```
+
+1. Deploy Docker Stack (this must be done from a Swarm MANGER node).
 ```bash
     [root@swarmmanager1 ]# docker stack deploy -c docker-compose.yml LABpdb
     Creating service LABpdb_dbnode3
@@ -37,15 +43,7 @@ b. Set up 'Placement constraints' for database containers.
     Creating service LABpdb_dbnode2
 ```
 
-> [!NOTE]
-> this Stack also created an 'attachable' Swarm network:
-```bash
-    [root@swarmmanager1 ]# docker network ls
-    NETWORK ID          NAME                      DRIVER              SCOPE
-    ...
-    fy2400k1pbac        **postgresApp**   overlay             swarm
-    ...
-```
+
 > [!IMPORTANT]
 >1. **To this swarm network you should attach other containers** which will be using the PostgreSQL DataBase.
 >All the traffic is going via LoadBalancer (haproxy).
@@ -111,5 +109,15 @@ postgres=# GRANT ALL PRIVILEGES ON DATABASE freeswitch to freeswitch;
 GRANT
 ```
 
-
+#add the databases, users and grant permissions to them
+apt update && apt install -y postgresql-client
+DROP SCHEMA public cascade;
+CREATE SCHEMA public;
+CREATE DATABASE fusionpbx ;
+CREATE DATABASE freeswitch ;
+CREATE ROLE fusionpbx WITH SUPERUSER LOGIN PASSWORD 'password';
+CREATE ROLE freeswitch WITH SUPERUSER LOGIN PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE fusionpbx to fusionpbx;
+GRANT ALL PRIVILEGES ON DATABASE freeswitch to fusionpbx;
+GRANT ALL PRIVILEGES ON DATABASE freeswitch to freeswitch;
 
