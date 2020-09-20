@@ -2,7 +2,7 @@ version: '3.3'
 services:
 
   postgrelb:
-    image: haproxy:alpine
+    image: haproxy:2.2-alpine
     depends_on:
       - etcd
     #if need external access than expose ports
