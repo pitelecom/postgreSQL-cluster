@@ -22,7 +22,7 @@ services:
           memory: 4G
       restart_policy:
         condition: on-failure
-        max_attempts: 10
+        max_attempts: 0
       placement:
         constraints:
           - node.labels.pdb == node
@@ -47,7 +47,7 @@ services:
           memory: 4G
       restart_policy:
         condition: on-failure
-        max_attempts: 3
+        max_attempts: 30
       placement:
         constraints:
           - node.labels.pdb == node
@@ -77,7 +77,7 @@ services:
           memory: 16G
       restart_policy:
         condition: on-failure
-        max_attempts: 7
+        max_attempts: 0
       placement:
         constraints:
           - node.labels.pdb1 == node
@@ -106,7 +106,7 @@ services:
           memory: 16G
       restart_policy:
         condition: on-failure
-        max_attempts: 7
+        max_attempts: 0
       placement:
         constraints:
           - node.labels.pdb2 == node
@@ -135,7 +135,7 @@ services:
           memory: 16G
       restart_policy:
         condition: on-failure
-        max_attempts: 7
+        max_attempts: 0
       placement:
         constraints:
           - node.labels.pdb3 == node
